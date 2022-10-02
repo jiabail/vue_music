@@ -1,13 +1,9 @@
 <template>
   <div class="login-container">
     <!--NavBar导航栏-->
-    <van-grid :column-num="1">
-      <van-grid-item center>
-        <van-image
-          src="https://img.zcool.cn/community/01b7ec591d00e0a801216a3e9be611.png@1280w_1l_2o_100sh.png"
-        />
-      </van-grid-item>
-    </van-grid>
+    <van-nav-bar title="登录" class="page-nav-bar">
+      <van-icon slot="left" name="cross" @click="$router.back()"></van-icon>
+    </van-nav-bar>
     <!--登录表单-->
     <van-form @submit="onSubmit" ref="loginForm">
       <van-field
@@ -109,13 +105,17 @@ export default {
         //持续时间，默认是2000ms,如果为0则持续展示
         duration: 0,
       });
-      //提交表单
+      //提交表单,请求登录
       try {
-        const res = await login(user);
-        this.$store.commit("setUser");
-        console.log("登录成功", res);
+        const { data } = await login(user);
+        this.$store.commit("setUser", data.data);
+        //console.log("登录成功", res);
         this.$toast.success("登录成功");
+        //登录成功，跳转
+        //back不严谨
+        this.$router.back();
       } catch (err) {
+        console.log(err);
         if (err.response.status === 400) {
           this.$toast.fail("手机号或验证码错误");
         } else {
@@ -151,11 +151,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.van-nav-bar .van-icon {
+  color: #fff;
+}
 .van-button--info {
   background-color: #ff3a3a;
   border: 1px solid #ff3a3a;
 }
 .login-container {
+  .page-nav-bar {
+    background-color: #ff3a3a;
+  }
   .font {
     font-size: 37px;
   }
