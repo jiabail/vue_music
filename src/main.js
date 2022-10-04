@@ -13,7 +13,24 @@ import '@/vant/index'
 //加载dayjs初始化配置
 import './utils/dayjs'
 
+
+
 Vue.config.productionTip = false
+
+//封装中间件函数插件
+const directiveObj = {
+  install(Vue) {
+    //创建一个全局自定义指令
+  Vue.directive('getFocus', {
+  inserted(el) {
+    let theInput=el.querySelector('input')
+    theInput.focus()
+  }
+  })
+  }
+}
+
+Vue.use(directiveObj)
 
 new Vue({
   router,

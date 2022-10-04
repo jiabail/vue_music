@@ -48,7 +48,13 @@
 </template>
 
 <script>
-import { getAllChannels } from "@/api/channel";
+import {
+  getAllChannels,
+  addUserChannel,
+  deleteUserChannel,
+} from "@/api/channel";
+import { mapState } from "vuex";
+import { setItem } from "@/utils/storage";
 export default {
   name: "ChannelEdit",
   props: {
@@ -72,6 +78,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["user"]),
     recommendChannels() {
       const newArr = this.allChannels.filter((bigItem) => {
         const index = this.myChannels.findIndex((myChannel) => {
@@ -100,9 +107,26 @@ export default {
         this.$toast("数据获取失败");
       }
     },
-    onAddChannel(channel) {
+    async onAddChannel(channel) {
       //console.log(channel);
       this.myChannels.push(channel);
+      //数据持久化处理
+      if (this.user) {
+        //已登录，把数据放到后台
+        try {
+          const { data } = await addUserChannel({
+            id: channel.id,
+            seq: this.myChannels.length,
+          });
+          console.log(data);
+        } catch (error) {
+          //console.log(error);
+          this.$toast("保存失败，请稍后重试");
+        }
+      } else {
+        //未登录，数据保存到本地
+        setItem("TOUTIAO_CHANNELS", this.myChannels);
+      }
     },
     onMyChannelClick(channel, index) {
       if (this.isEdit) {
@@ -110,14 +134,28 @@ export default {
         if (this.fixChannels.includes(channel.id)) {
           return;
         }
+        this.myChannels.splice(index, 1);
         if (index <= this.active) {
           //让激活频道的索引减1
           this.$emit("update-active", this.active - 1);
         }
-        this.myChannels.splice(index, 1);
+        //处理持久化
+        this.deleteChannel(channel.id);
       } else {
         //非编辑，切换
         this.$emit("update-active", index, false);
+      }
+    },
+    //处理持久化函数
+    async deleteChannel(id) {
+      try {
+        if (this.user) {
+          await deleteUserChannel(id);
+        } else {
+          setItem("TOUTIAO_CHANNELS", this.myChannels);
+        }
+      } catch (error) {
+        this.$toast("操作失败，请稍后重试");
       }
     },
   },

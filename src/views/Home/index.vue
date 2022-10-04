@@ -7,7 +7,16 @@
         <span class="nav-text">头条</span>
       </template>
       <template #right>
-        <van-icon name="search" class="search-nav" size="0.48rem"></van-icon>
+        <van-button
+          type="default"
+          plain
+          round
+          size="small"
+          class="search-btn"
+          to="/search"
+        >
+          <van-icon name="search" class="search-nav" size="0.48rem"> </van-icon>
+        </van-button>
       </template>
     </van-nav-bar>
     <!-- 频道列表 -->
@@ -47,13 +56,13 @@
 import { getUserChannels } from "@/api/user";
 import ArticleList from "./components/Article-list.vue";
 import ChannelEdit from "./components/Channel-edit.vue";
-import App from "@/App.vue";
+import { setItem, getItem } from "@/utils/storage";
+import { mapState } from "vuex";
 export default {
   name: "HomeIndex",
   components: {
     ArticleList,
     ChannelEdit,
-    App,
   },
   data() {
     return {
@@ -63,14 +72,30 @@ export default {
       isChannelEditShow: false,
     };
   },
+  computed: {
+    ...mapState(["user"]),
+  },
   created() {
     this.loadChannels();
   },
   methods: {
     async loadChannels() {
       try {
-        const { data } = await getUserChannels();
-        this.channels = data.data.channels;
+        if (this.user) {
+          //已登录
+          const { data } = await getUserChannels();
+          this.channels = data.data.channels;
+        } else {
+          //未登录，获取默认频道列表
+          const localChannels = getItem("TOUTIAO_CHANNELS");
+          if (localChannels) {
+            this.channels = localChannels;
+          } else {
+            const { data } = await getUserChannels();
+            this.channels = data.data.channels;
+          }
+        }
+
         //console.log(data);
       } catch (err) {
         this.$toast("获取频道数据失败");
@@ -101,9 +126,19 @@ export default {
       color: #fff;
     }
   }
-  .search-nav {
-    color: #fff;
+  .van-nav-bar__title {
+    max-width: unset;
   }
+  .search-btn {
+    width: 520px;
+    height: 64px;
+    border: none;
+    .search-nav {
+      color: black;
+      right: 220px;
+    }
+  }
+
   .nav-icon {
     font-size: 55px;
     color: #ff7070;
