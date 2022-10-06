@@ -1,6 +1,6 @@
 //vant采用按需引入的方式
 import Vue from 'vue';
-import { NavBar,Form,Field,Button,Grid, GridItem,Image,Toast,CountDown,Tabbar,TabbarItem,Icon,Cell,CellGroup,Dialog,Tab,Tabs,List,PullRefresh,Popup,Search,Loading,Divider,ImagePreview} from 'vant';
+import { NavBar,Form,Field,Button,Grid, GridItem,Image,Toast,CountDown,Tabbar,TabbarItem,Icon,Cell,CellGroup,Dialog,Tab,Tabs,List,PullRefresh,Popup,Search,Loading,Divider,ImagePreview,Picker,DatetimePicker} from 'vant';
 
 Vue.use(NavBar);
 Vue.use(Form);
@@ -26,3 +26,5 @@ Vue.use(Search);
 Vue.use(Loading);
 Vue.use(Divider);
 Vue.use(ImagePreview);
+Vue.use(Picker);
+Vue.use(DatetimePicker);

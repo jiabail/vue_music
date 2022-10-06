@@ -89,6 +89,7 @@
           :source="article.art_id"
           @onload-success="totalCommentCount = $event.total_count"
           :list="commentList"
+          @reply-click="onReplyClick"
         >
         </ArticleComment>
         <!-- 底部区域 -->
@@ -143,6 +144,20 @@
       </div>
       <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
     </div>
+    <!--评论回复-->
+    <!--弹出层是懒渲染，之后它的关闭和显示都是在切换内容的显示与隐藏-->
+    <van-popup
+      v-model="isReplyShow"
+      position="bottom"
+      :style="{ height: '95%' }"
+    >
+      <CommentReply
+        v-if="isReplyShow"
+        :comment="currentComment"
+        @close="isReplyShow = false"
+      >
+      </CommentReply>
+    </van-popup>
   </div>
 </template>
 
@@ -154,6 +169,7 @@ import CollectArticle from "@/components/collect-article/index.vue";
 import LikeArticle from "@/components/like-article/index.vue";
 import ArticleComment from "@/views/Article/components/article-comment";
 import CommentPost from "./components/comment-post";
+import CommentReply from "./components/comment-reply";
 
 /* ImagePreview({
   images: [
@@ -174,6 +190,12 @@ export default {
       required: true,
     },
   },
+  //给所有的后代组件提供数据
+  provide: function () {
+    return {
+      articleId: this.articleId,
+    };
+  },
   data() {
     return {
       article: {},
@@ -183,6 +205,8 @@ export default {
       totalCommentCount: 0,
       isPostShow: false,
       commentList: [], //评论列表
+      isReplyShow: false,
+      currentComment: {}, //当前点击回复的评论项
     };
   },
   created() {
@@ -259,6 +283,11 @@ export default {
       this.isPostShow = false;
       this.commentList.unshift(data.new_obj);
     },
+    async onReplyClick(comment) {
+      //console.log(comment);
+      this.currentComment = comment;
+      this.isReplyShow = true;
+    },
   },
   components: {
     FollowUser,
@@ -266,6 +295,7 @@ export default {
     LikeArticle,
     ArticleComment,
     CommentPost,
+    CommentReply,
   },
 };
 </script>

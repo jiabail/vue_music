@@ -4,8 +4,14 @@
     :finished="finished"
     finished-text="没有更多了"
     @load="onLoad"
+    :immediate-check="false"
   >
-    <CommentItem v-for="(item, index) in list" :key="index" :comment="item">
+    <CommentItem
+      v-for="(item, index) in list"
+      :key="index"
+      :comment="item"
+      @reply-click="$emit('reply-click', $event)"
+    >
     </CommentItem>
   </van-list>
 </template>
@@ -27,6 +33,13 @@ export default {
         return [];
       },
     },
+    type: {
+      type: String,
+      validator(val) {
+        return ["a", "c"].includes(val);
+      },
+      default: "a",
+    },
   },
   data() {
     return {
@@ -38,14 +51,15 @@ export default {
     };
   },
   created() {
+    this.loading = true;
     this.onLoad();
   },
   methods: {
     async onLoad() {
       try {
         const { data } = await getComments({
-          type: "a",
-          source: this.source,
+          type: this.type,
+          source: this.source.toString(),
           offset: this.offset,
           limit: this.offset,
         });

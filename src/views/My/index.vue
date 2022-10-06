@@ -8,7 +8,7 @@
           <span class="name">{{ userInfo.name }}</span>
         </div>
         <div class="right">
-          <van-button size="mini" round>编辑资料</van-button>
+          <van-button size="mini" round to="/profile">编辑资料</van-button>
         </div>
       </div>
       <div class="data-stats">
@@ -51,7 +51,7 @@
     </van-grid>
     <!--单元格导航-->
     <van-cell title="消息通知" is-link />
-    <van-cell title="小智同学" is-link class="mb-9" />
+    <van-cell title="小思同学" is-link class="mb-9" to="/chat" />
     <van-cell
       v-if="user"
       title="退出登录"
@@ -59,6 +59,9 @@
       @click="onLogout"
       clickable
     />
+    <template>
+      <router-view></router-view>
+    </template>
   </div>
 </template>
 

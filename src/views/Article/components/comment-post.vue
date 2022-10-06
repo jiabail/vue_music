@@ -30,6 +30,12 @@ export default {
       required: true,
     },
   },
+  inject: {
+    articleId: {
+      type: [Number, String, Object],
+      default: null,
+    },
+  },
   data() {
     return {
       message: "",
@@ -46,9 +52,9 @@ export default {
       });
       try {
         const { data } = await addComment({
-          target: this.target,
+          target: this.target.toString(),
           content: this.message,
-          art_id: null,
+          art_id: this.articleId ? this.articleId.toString() : null,
         });
         //console.log(data);
         this.message = "";
@@ -78,6 +84,9 @@ export default {
     &::before {
       display: none;
     }
+  }
+  .reply-btn {
+    width: auto;
   }
 }
 </style>

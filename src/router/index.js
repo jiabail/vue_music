@@ -21,28 +21,27 @@ const routes = [
   
     children: [
       {
-        path: '/home',//默认子路由,只能有一个
+        path: 'home',//默认子路由,只能有一个
         name:'home',
         component: () => import('@/views/Home'),
         
       },
       {
-        path: '/qa',
+        path: 'qa',
         name:'qa',
         component: () => import('@/views/Qa'),
     
       },
       {
-        path: '/video',
+        path: 'video',
         name:'video',
         component: () => import('@/views/Video'),
       
       },
       {
-        path: '/my',
+        path: 'my',
         name:'my',
-        component: () => import('@/views/My'),
-        
+        component: () => import('@/views/My/index.vue'),
       },
     ]
   },
@@ -57,6 +56,16 @@ const routes = [
     component: () => import('@/views/Article'),
     // 将路由动态参数映射到组件的 props 中，更推荐这种做法,开启props传参
      props: true
+  },
+  {
+    path: '/profile',
+    name:'profile',
+    component: () => import('@/views/user-profile/index.vue'),
+  },
+  {
+    path: '/chat',
+    name:'chat',
+    component: () => import('@/views/Chat'),
   },
 ]
 
